@@ -66,7 +66,14 @@ class MessageParser:
         for job_datum in job_data:
             self.jobs.append(Job(**job_datum))
 
-        self.matrix = self.data.get('matrix')
+        self.matrix = self.add_dummy_location_to_matrix(self.data.get('matrix'))
+
+    @staticmethod
+    def add_dummy_location_to_matrix(matrix):
+        matrix = [row + [0] for row in matrix]
+        last_row = [0 for _ in range(len(matrix) + 1)]
+        matrix.append(last_row)
+        return matrix
 
     def get_vehicle_count(self):
         return len(self.vehicles)
@@ -84,7 +91,7 @@ class MessageParser:
         return [vehicle.start_index for vehicle in self.vehicles]
 
     def get_vehicle_end_index(self):
-        return [0 for i in range(len(self.vehicles))]
+        return [len(self.matrix) - 1 for i in range(len(self.vehicles))]
 
     def get_vehicle_capacities(self):
         return [vehicle.total_capacity for vehicle in self.vehicles]

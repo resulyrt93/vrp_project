@@ -20,7 +20,6 @@ class RouteSolver:
 
     def distance_callback(self, from_index, to_index):
         """Returns the distance between the two nodes."""
-        # Convert from routing variable Index to distance matrix NodeIndex.
         from_node = self.manager.IndexToNode(from_index)
         to_node = self.manager.IndexToNode(to_index)
         travel_time = self.parser.matrix[from_node][to_node]
@@ -62,7 +61,6 @@ class RouteSolver:
         self.routing = self.create_routing()
         solution = self.routing.SolveWithParameters(self.search_parameters)
 
-        print(self.parser.vehicles)
         return self.get_routes(solution) if solution else {"detail": "Solution not found!"}
 
     def get_routes(self, solution):
