@@ -6,8 +6,8 @@ from route_solver import RouteSolver
 app = FastAPI()
 
 
-@app.post("/")
-async def read_root(request: Request):
+@app.post("/solve")
+async def solve(request: Request):
     data = await request.json()
 
     message_validator = MessageValidator(data)
@@ -16,3 +16,8 @@ async def read_root(request: Request):
 
     route_solver = RouteSolver(parser)
     return route_solver.solve()
+
+
+@app.get("/check")
+def check():
+    return {"status": "I am alive!"}
