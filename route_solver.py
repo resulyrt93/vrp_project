@@ -23,7 +23,7 @@ class RouteSolver:
         from_node = self.manager.IndexToNode(from_index)
         to_node = self.manager.IndexToNode(to_index)
         travel_time = self.parser.matrix[from_node][to_node]
-        service_time = 0
+        service_time = self.parser.get_total_service_time_with_location_index(to_index)
 
         return travel_time + service_time
 
