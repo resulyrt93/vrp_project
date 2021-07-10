@@ -5,14 +5,25 @@ from parser import MessageParser
 
 
 class RouteSolver:
+    """
+    RouteSolver use google or-tools CVRP solving flow.
+    Following documentation can be use as guide.
+    https://developers.google.com/optimization/routing/cvrp
+
+    :arg parser: MessageParser
+    """
 
     def __init__(self, parser: MessageParser):
         self.parser = parser
 
     def create_manager(self):
+        """
+        Collects required arguments from parser class and create index manager for use whole class
+        :return manager: RoutingIndexManager
+        """
         location_count = self.parser.get_location_count()
         vehicle_count = self.parser.get_vehicle_count()
-        start_index = self.parser.get_start_index_list()
+        start_index = self.parser.get_vehicle_start_index()
         end_index = self.parser.get_vehicle_end_index()
 
         manager = pywrapcp.RoutingIndexManager(location_count, vehicle_count, start_index, end_index)
@@ -34,6 +45,10 @@ class RouteSolver:
 
     @property
     def search_parameters(self):
+        """
+        Property method contains search_parameter for solution.
+        :return search_parameter: DefaultRoutingSearchParameters
+        """
         search_parameters = pywrapcp.DefaultRoutingSearchParameters()
         search_parameters.first_solution_strategy = (FirstSolutionStrategy.PATH_CHEAPEST_ARC)
         search_parameters.local_search_metaheuristic = (LocalSearchMetaheuristic.GUIDED_LOCAL_SEARCH)
@@ -41,6 +56,9 @@ class RouteSolver:
         return search_parameters
 
     def create_routing(self):
+        """
+        :return routing: RoutingModel
+        """
         routing = pywrapcp.RoutingModel(self.manager)
 
         transit_callback_index = routing.RegisterTransitCallback(self.distance_callback)
@@ -56,14 +74,11 @@ class RouteSolver:
 
         return routing
 
-    def solve(self):
-        self.manager = self.create_manager()
-        self.routing = self.create_routing()
-        solution = self.routing.SolveWithParameters(self.search_parameters)
-
-        return self.get_routes(solution) if solution else {"detail": "Solution not found!"}
-
     def get_routes(self, solution):
+        """
+        :param solution: RoutingModel_SolveWithParameters
+        :return: routes: dictionary
+        """
         total_duration = 0
         routes = []
         for i, vehicle in enumerate(self.parser.vehicles):
@@ -85,3 +100,15 @@ class RouteSolver:
             "total_delivery_duration": total_duration,
             "routes": routes
         }
+
+    def solve(self):
+        """
+        This is only method for solve problem that needs to be call from the outside of class.
+        If solution is not found, return detail message.
+        :return routes: dictionary
+        """
+        self.manager = self.create_manager()
+        self.routing = self.create_routing()
+        solution = self.routing.SolveWithParameters(self.search_parameters)
+
+        return self.get_routes(solution) if solution else {"detail": "Solution not found!"}

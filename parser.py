@@ -2,6 +2,11 @@ from dataclasses import dataclass
 
 
 class MessageValidator:
+    """
+    MessageValidator class contains validation methods for route message patch.
+    Also MessageParser instance can be retrieve from .get_parser() method.
+    Of course the message object must be validated first.
+    """
     validated = False
     message_content = ["vehicles", "jobs", "matrix"]
 
@@ -9,6 +14,10 @@ class MessageValidator:
         self.raw_data = data
 
     def validate(self):
+        """
+        Checks if the message is in the correct format
+        :return: Boolean : whether is valid
+        """
         for content in self.message_content:
             content_value = self.raw_data.get(content)
             if content_value is None:
@@ -19,6 +28,10 @@ class MessageValidator:
         return True
 
     def get_parser(self):
+        """
+        If message data validated, retrieve parser class
+        :return: parser class instance : MessageParser
+        """
         if self.validated:
             return MessageParser(data=self.raw_data)
         else:
@@ -27,6 +40,9 @@ class MessageValidator:
 
 @dataclass
 class Vehicle:
+    """
+    Vehicle class contain vehicle model data.
+    """
     id: int
     start_index: int
     capacity: list
@@ -38,6 +54,9 @@ class Vehicle:
 
 @dataclass
 class Job:
+    """
+    Job class contain job model data
+    """
     id: int
     location_index: int
     delivery: list
@@ -49,6 +68,11 @@ class Job:
 
 
 class MessageParser:
+    """
+    MessageParser class contains helper methods for route message.
+
+    data :arg dictionary: raw message object
+    """
 
     def __init__(self, data):
         self.vehicles = []
@@ -58,6 +82,10 @@ class MessageParser:
         self.parse_data()
 
     def parse_data(self):
+        """
+        It's automatically executed when the class initialized for create Vehicle
+        and Job instances and preprocessing in distance matrix.
+        """
         vehicle_data = self.data.get('vehicles')
         for vehicle_datum in vehicle_data:
             self.vehicles.append(Vehicle(**vehicle_datum))
@@ -70,38 +98,70 @@ class MessageParser:
 
     @staticmethod
     def add_dummy_location_to_matrix(matrix):
+        """
+        Vehicles will not return to depot when their jobs is done. Therefore we need a zero cost
+        location for route ending. This tricky approach is suggested on below or-tools documentation
+        https://developers.google.com/optimization/routing/routing_tasks#allowing-arbitrary-start-and-end-locations
+        :param matrix: list
+        :return: matrix: list
+        """
         matrix = [row + [0] for row in matrix]
         last_row = [0 for _ in range(len(matrix) + 1)]
         matrix.append(last_row)
         return matrix
 
     def get_vehicle_count(self):
+        """
+        Return total vehicle count
+        """
         return len(self.vehicles)
 
-    def get_capacity_list(self):
-        return [vehicle.total_capacity for vehicle in self.vehicles]
-
-    def get_start_index_list(self):
-        return [vehicle.start_index for vehicle in self.vehicles]
-
     def get_location_count(self):
+        """
+        Return total location count
+        """
         return len(self.matrix)
 
     def get_vehicle_start_index(self):
+        """
+        Return vehicles start location indexes
+        """
         return [vehicle.start_index for vehicle in self.vehicles]
 
     def get_vehicle_end_index(self):
+        """
+        Return vehicles end location indexes
+        """
         return [len(self.matrix) - 1 for i in range(len(self.vehicles))]
 
     def get_vehicle_capacities(self):
+        """
+        Return vehicle capacities
+        """
         return [vehicle.total_capacity for vehicle in self.vehicles]
 
     @property
     def demand_list(self):
+        """
+        Return demand list
+        """
         demand_list = [0 for _ in range(len(self.matrix))]
         for job in self.jobs:
             demand_list[job.location_index] = demand_list[job.location_index] + job.total_delivery
         return demand_list
 
     def get_job_ids_with_location_index(self, index):
+        """
+        Return job ids with target location index
+        :param index: int
+        :return job_ids: list
+        """
         return [job.id for job in self.jobs if job.location_index == index]
+
+    def get_total_service_time_with_location_index(self, index):
+        """
+        Return service time with target location index
+        :param index:
+        :return service_time: int
+        """
+        return sum([job.service for job in self.jobs if job.location_index == index])
