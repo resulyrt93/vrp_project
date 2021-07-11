@@ -2,10 +2,10 @@ import React from 'react';
 import {Button, Form, InputNumber, Space} from "antd";
 import {MinusCircleOutlined, PlusOutlined} from "@ant-design/icons";
 
-const VehicleList = ({onValuesChange}) => {
+const VehicleList = () => {
+
   return (
     <div>
-      <Form onValuesChange={onValuesChange} autoComplete="off">
         <Form.List name="vehicles">
           {(fields, {add, remove}) => (
             <>
@@ -21,7 +21,7 @@ const VehicleList = ({onValuesChange}) => {
                   </Form.Item>
                   <Form.Item
                     {...restField}
-                    name={[name, 'location']}
+                    name={[name, 'start_index']}
                     fieldKey={[fieldKey, 'location']}
                     rules={[{required: true, message: 'Missing Location Index'}]}
                   >
@@ -38,7 +38,6 @@ const VehicleList = ({onValuesChange}) => {
             </>
           )}
         </Form.List>
-      </Form>
     </div>
   );
 };

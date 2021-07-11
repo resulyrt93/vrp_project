@@ -2,10 +2,10 @@ import React from 'react';
 import {Button, Form, InputNumber, Space} from "antd";
 import {MinusCircleOutlined, PlusOutlined} from "@ant-design/icons";
 
-const JobList = ({onValuesChange}) => {
+const JobList = () => {
+
   return (
     <div>
-      <Form onValuesChange={onValuesChange} autoComplete="off">
         <Form.List name="jobs">
           {(fields, {add, remove}) => (
             <>
@@ -21,7 +21,7 @@ const JobList = ({onValuesChange}) => {
                   </Form.Item>
                   <Form.Item
                     {...restField}
-                    name={[name, 'target']}
+                    name={[name, 'location_index']}
                     fieldKey={[fieldKey, 'target']}
                     rules={[{required: true, message: 'Missing Target Index'}]}
                   >
@@ -45,7 +45,6 @@ const JobList = ({onValuesChange}) => {
             </>
           )}
         </Form.List>
-      </Form>
     </div>
   );
 };
