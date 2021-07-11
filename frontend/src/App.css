@@ -1,0 +1,13 @@
+
+.card-template {
+    height: 100%;
+    border: 1px solid #e0dfdf !important;
+}
+
+.base-row {
+    height: 98%;
+}
+
+.ant-input-number {
+    width: 100% !important;
+}
