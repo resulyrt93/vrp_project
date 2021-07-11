@@ -1,7 +1,8 @@
+import uvicorn
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 
-from parser import MessageValidator
+from validator import MessageValidator
 from route_solver import RouteSolver
 
 app = FastAPI()
@@ -31,6 +32,5 @@ async def solve(request: Request):
     return route_solver.solve()
 
 
-@app.get("/check")
-def check():
-    return {"status": "I am alive!"}
+if __name__ == '__main__':
+    uvicorn.run(app, host="0.0.0.0", port=8000)

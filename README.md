@@ -14,9 +14,8 @@ In the project, route calculations can be made according to the number of vehicl
 
 ```sh
 git clone https://github.com/resulyrt93/vrp_project.git
-cd vrp_project
+cd vrp_project/api
 pip install -r requirements.txt
-cd src/
 uvicorn main:app --reload
 ```
 

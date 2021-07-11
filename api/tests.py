@@ -1,8 +1,8 @@
 import unittest
 from copy import copy
 
-from src.parser import MessageValidator, MessageParser
-from src.route_solver import RouteSolver
+from api.parser import MessageValidator, MessageParser
+from api.route_solver import RouteSolver
 
 dummy_data = {
     "vehicles": [
