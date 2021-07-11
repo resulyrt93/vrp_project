@@ -24,10 +24,13 @@ function App() {
     setResultData([])
     const data = form.getFieldsValue()
     try {
+      await form.validateFields()
       const result = await solve(data)
       setResultData(result)
     } catch (e) {
-      message.warn("Error : ", e)
+      if (e.detail) {
+        message.error(`Error : ${e.detail}`)
+      }
     } finally {
       setLoading(false)
     }

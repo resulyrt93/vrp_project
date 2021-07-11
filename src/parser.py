@@ -1,5 +1,7 @@
 from dataclasses import dataclass
 
+from fastapi import HTTPException
+
 
 class MessageValidator:
     """
@@ -21,9 +23,11 @@ class MessageValidator:
         for content in self.message_content:
             content_value = self.raw_data.get(content)
             if content_value is None:
-                raise Exception("Message should contain {0} key!".format(content))
+                raise HTTPException(status_code=400, detail="Message should contain {0} key!".format(content))
             if not isinstance(content_value, list):
-                raise Exception("{0} should be a list instance!".format(content))
+                raise HTTPException(status_code=400, detail="{0} should be a list instance!".format(content))
+            if not len(content_value):
+                raise HTTPException(status_code=400, detail="You must have enter at least one {0}!".format(content))
         self.validated = True
         return True
 
@@ -35,7 +39,7 @@ class MessageValidator:
         if self.validated:
             return MessageParser(data=self.raw_data)
         else:
-            raise Exception("Message not validated. Use .validate() method for validation.")
+            raise HTTPException(status_code=400, detail="Message not validated. Use .validate() method for validation.")
 
 
 @dataclass
