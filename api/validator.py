@@ -1,5 +1,5 @@
-from api.parser import MessageParser
-from api.exceptions import ValidationException
+from route_parser import MessageParser
+from exceptions import ValidationException
 
 
 class MessageValidator:

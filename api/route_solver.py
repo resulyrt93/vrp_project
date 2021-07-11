@@ -1,4 +1,4 @@
-from api.exceptions import SolverException
+from exceptions import SolverException
 from ortools.constraint_solver import pywrapcp
 from ortools.constraint_solver.routing_enums_pb2 import FirstSolutionStrategy, LocalSearchMetaheuristic
 
