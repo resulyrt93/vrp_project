@@ -28,6 +28,19 @@ class MessageValidator:
                 raise HTTPException(status_code=400, detail="{0} should be a list instance!".format(content))
             if not len(content_value):
                 raise HTTPException(status_code=400, detail="You must have enter at least one {0}!".format(content))
+
+        location_count = len(self.raw_data.get('matrix'))
+
+        for vehicle in self.raw_data.get('vehicles'):
+            if vehicle['start_index'] + 1 > location_count:
+                raise HTTPException(status_code=400, detail="Distance matrix not contain index as {0}".format(
+                    str(vehicle['start_index'])))
+
+        for job in self.raw_data.get('jobs'):
+            if job['location_index'] + 1 > location_count:
+                raise HTTPException(status_code=400, detail="Distance matrix not contain index as {0}".format(
+                    str(job['location_index'])))
+
         self.validated = True
         return True
 
