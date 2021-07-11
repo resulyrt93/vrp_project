@@ -85,3 +85,11 @@ You can also make a post request to ```localhost:8000/solve``` for solve routing
   ]
 }
 ```
+
+## Tests
+
+Test were written for various scenarios with dummy data. You can run unit tests with following command
+
+```sh
+python -m unittest tests.py 
+```
