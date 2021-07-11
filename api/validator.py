@@ -1,6 +1,5 @@
-from fastapi import HTTPException
-
-from parser import MessageParser
+from api.parser import MessageParser
+from api.exceptions import ValidationException
 
 
 class MessageValidator:
@@ -23,23 +22,22 @@ class MessageValidator:
         for content in self.message_content:
             content_value = self.raw_data.get(content)
             if content_value is None:
-                raise HTTPException(status_code=400, detail="Message should contain {0} key!".format(content))
+                raise ValidationException("Message should contain {0} key!".format(content))
             if not isinstance(content_value, list):
-                raise HTTPException(status_code=400, detail="{0} should be a list instance!".format(content))
+                raise ValidationException("{0} should be a list instance!".format(content))
             if not len(content_value):
-                raise HTTPException(status_code=400, detail="You must have enter at least one {0}!".format(content))
+                raise ValidationException("You must have enter at least one {0}!".format(content))
 
         location_count = len(self.raw_data.get('matrix'))
 
         for vehicle in self.raw_data.get('vehicles'):
             if vehicle['start_index'] + 1 > location_count:
-                raise HTTPException(status_code=400, detail="Distance matrix not contain index as {0}".format(
-                    str(vehicle['start_index'])))
+                raise ValidationException(
+                    "Distance matrix not contain index as {0}".format(str(vehicle['start_index'])))
 
         for job in self.raw_data.get('jobs'):
             if job['location_index'] + 1 > location_count:
-                raise HTTPException(status_code=400, detail="Distance matrix not contain index as {0}".format(
-                    str(job['location_index'])))
+                raise ValidationException("Distance matrix not contain index as {0}".format(str(job['location_index'])))
 
         self.validated = True
         return True
@@ -52,4 +50,4 @@ class MessageValidator:
         if self.validated:
             return MessageParser(data=self.raw_data)
         else:
-            raise HTTPException(status_code=400, detail="Message not validated. Use .validate() method for validation.")
+            raise ValidationException("Message not validated. Use .validate() method for validation.")

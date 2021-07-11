@@ -1,4 +1,4 @@
-from fastapi import HTTPException
+from api.exceptions import SolverException
 from ortools.constraint_solver import pywrapcp
 from ortools.constraint_solver.routing_enums_pb2 import FirstSolutionStrategy, LocalSearchMetaheuristic
 
@@ -114,4 +114,4 @@ class RouteSolver:
         if solution:
             return self.get_routes(solution)
         else:
-            raise HTTPException(status_code=400, detail="Solution not found!")
+            raise SolverException("Solution not found!")

@@ -1,4 +1,4 @@
-from models import Vehicle, Job
+from api.models import Vehicle, Job
 
 
 class MessageParser:
