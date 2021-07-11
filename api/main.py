@@ -2,7 +2,7 @@ import uvicorn
 from fastapi import FastAPI, Request, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 
-from exceptions import SolverException
+from exceptions import SolverException, ValidationException
 from validator import MessageValidator
 from route_solver import RouteSolver
 
@@ -28,7 +28,7 @@ async def solve(request: Request):
     message_validator = MessageValidator(data)
     try:
         message_validator.validate()
-    except SolverException as e:
+    except ValidationException as e:
         raise HTTPException(status_code=400, detail=str(e))
     parser = message_validator.get_parser()
 
