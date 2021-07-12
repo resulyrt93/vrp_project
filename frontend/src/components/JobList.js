@@ -36,6 +36,7 @@ const JobList = () => {
                   {...restField}
                   name={[name, 'service']}
                   fieldKey={[fieldKey, 'service']}
+                  rules={[{required: true, message: 'Missing Service Duration'}]}
                 >
                   <InputNumber placeholder="Service Duration"/>
                 </Form.Item>
