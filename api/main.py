@@ -1,4 +1,3 @@
-import uvicorn
 from fastapi import FastAPI, Request, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 
@@ -39,5 +38,6 @@ async def solve(request: Request):
         raise HTTPException(status_code=400, detail=str(e))
 
 
-if __name__ == '__main__':
-    uvicorn.run(app, host="0.0.0.0", port=8000)
+@app.get("/check")
+def check():
+    return {"status": "I am alive!"}
